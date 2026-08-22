@@ -23,7 +23,7 @@ const AdminLayout = () => {
 
                 <footer className="px-8 py-6 border-t border-black/10 dark:border-white/5 text-center md:text-left">
                     <p className="text-xs text-slate-400 dark:text-slate-500 font-medium tracking-wide">
-                        © {new Date().getFullYear()} <span className="text-[#04C244]">OneTap Solution</span> Admin Dashboard. All Rights Reserved.
+                        © {new Date().getFullYear()} <span className="text-[#04C244]">Dhiil Tech</span> Admin Dashboard. All Rights Reserved.
                     </p>
                 </footer>
             </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Users, Map, Award } from 'lucide-react';
+import { getStats } from '../services/api';
 
 const Stats = () => {
   const calculateYearsOfExperience = () => {
@@ -24,13 +25,12 @@ const Stats = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/stats/public');
-        const result = await res.json();
-        if (result.success && result.data) {
+        const data = await getStats();
+        if (data) {
           setStatsList([
-            { number: result.data.projects, suffix: '+', label: 'Projects Done', icon: <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> },
-            { number: result.data.clients, suffix: '+', label: 'Trusted Partners', icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> },
-            { number: result.data.services, suffix: '+', label: 'Regions Served', icon: <Map className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> },
+            { number: data.projects, suffix: '+', label: 'Projects Done', icon: <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> },
+            { number: data.clients, suffix: '+', label: 'Trusted Partners', icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> },
+            { number: data.services, suffix: '+', label: 'Regions Served', icon: <Map className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> },
             { number: calculateYearsOfExperience(), suffix: '+', label: 'Years Experience', icon: <Award className="w-6 h-6 sm:w-8 sm:h-8 text-[#04C244]" /> }
           ]);
         }

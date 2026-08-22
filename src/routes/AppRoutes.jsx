@@ -19,7 +19,6 @@ import AdminUsers from '../admin/pages/AdminUsers';
 import AdminProjects from '../admin/pages/AdminProjects';
 import AdminServices from '../admin/pages/AdminServices';
 import AdminMessages from '../admin/pages/AdminMessages';
-import AdminTeam from '../admin/pages/AdminTeam';
 import AdminTestimonials from '../admin/pages/AdminTestimonials';
 import AdminNews from '../admin/pages/AdminNews';
 import AdminSettings from '../admin/pages/AdminSettings';
@@ -52,16 +51,15 @@ const AppRoutes = () => {
           <Route path="login" element={<AdminLogin />} />
           
           <Route element={<AuthGuard><AdminLayout /></AuthGuard>}>
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="users" element={<RoleGuard requiredPermission="all"><AdminUsers /></RoleGuard>} />
-            <Route path="projects" element={<AdminProjects />} />
-            <Route path="services" element={<AdminServices />} />
-            <Route path="messages" element={<AdminMessages />} />
-            <Route path="team" element={<AdminTeam />} />
-            <Route path="testimonials" element={<AdminTestimonials />} />
-            <Route path="news" element={<AdminNews />} />
-            <Route path="settings" element={<RoleGuard requiredPermission="all"><AdminSettings /></RoleGuard>} />
-            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="dashboard" element={<RoleGuard requiredPermission="view_dashboard"><AdminDashboard /></RoleGuard>} />
+            <Route path="users" element={<RoleGuard requiredPermission="view_users"><AdminUsers /></RoleGuard>} />
+            <Route path="projects" element={<RoleGuard requiredPermission="view_projects"><AdminProjects /></RoleGuard>} />
+            <Route path="services" element={<RoleGuard requiredPermission="view_services"><AdminServices /></RoleGuard>} />
+            <Route path="messages" element={<RoleGuard requiredPermission="view_contacts"><AdminMessages /></RoleGuard>} />
+            <Route path="testimonials" element={<RoleGuard requiredPermission="view_testimonials"><AdminTestimonials /></RoleGuard>} />
+            <Route path="news" element={<RoleGuard requiredPermission="view_news"><AdminNews /></RoleGuard>} />
+            <Route path="settings" element={<AdminSettings />} />
+            <Route path="analytics" element={<RoleGuard requiredPermission="view_analytics"><AdminAnalytics /></RoleGuard>} />
             
             {/* Catch-all for modules in progress */}
             <Route path="*" element={

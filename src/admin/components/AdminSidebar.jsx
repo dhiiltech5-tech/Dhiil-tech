@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { 
-    LayoutDashboard, Users, Briefcase, UserPlus, Star, 
+    LayoutDashboard, Users, Briefcase, Star, 
     Mail, Settings, Newspaper, PieChart, LogOut, X, 
-    Settings2, Moon, Sun
+    Settings2, Moon, Sun, User
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const AdminSidebar = ({ isOpen, toggleSidebar }) => {
-    const { logout } = useAdmin();
+    const { logout, hasPermission } = useAdmin();
     const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
 
     const toggleTheme = () => {
@@ -27,21 +27,33 @@ const AdminSidebar = ({ isOpen, toggleSidebar }) => {
 
     const menuItems = [
         { title: 'Main Menu', type: 'header' },
-        { title: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
-        { title: 'Users', path: '/admin/users', icon: <Users size={20} /> },
-        { title: 'Projects', path: '/admin/projects', icon: <Briefcase size={20} /> },
-        { title: 'Team', path: '/admin/team', icon: <UserPlus size={20} /> },
-        { title: 'Testimonials', path: '/admin/testimonials', icon: <Star size={20} /> },
-        { title: 'Messages', path: '/admin/messages', icon: <Mail size={20} />, badge: true },
+        { title: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={18} />, permission: 'view_dashboard' },
+        { title: 'Users', path: '/admin/users', icon: <Users size={18} />, permission: 'view_users' },
+        { title: 'Projects', path: '/admin/projects', icon: <Briefcase size={18} />, permission: 'view_projects' },
+        { title: 'Testimonials', path: '/admin/testimonials', icon: <Star size={18} />, permission: 'view_testimonials' },
+        { title: 'Messages', path: '/admin/messages', icon: <Mail size={18} />, badge: true, permission: 'view_contacts' },
         
         { title: 'Management', type: 'header' },
-        { title: 'Services', path: '/admin/services', icon: <Settings size={20} /> },
-        { title: 'News', path: '/admin/news', icon: <Newspaper size={20} /> },
-        { title: 'Analytics', path: '/admin/analytics', icon: <PieChart size={20} /> },
+        { title: 'Services', path: '/admin/services', icon: <Settings size={18} />, permission: 'view_services' },
+        { title: 'News', path: '/admin/news', icon: <Newspaper size={18} />, permission: 'view_news' },
+        { title: 'Analytics', path: '/admin/analytics', icon: <PieChart size={18} />, permission: 'view_analytics' },
         
-        { title: 'Settings', type: 'header' },
-        { title: 'General', path: '/admin/settings', icon: <Settings2 size={20} /> },
+        { title: 'Account', type: 'header' },
+        { title: 'Profile', path: '/admin/settings', icon: <User size={18} /> },
+        
+        { title: 'System', type: 'header', permission: 'manage_settings' },
+        { title: 'General', path: '/admin/settings', icon: <Settings2 size={18} />, permission: 'manage_settings' },
     ];
+
+    const filteredMenu = menuItems.filter((item, idx) => {
+        if (item.type === 'header') {
+            const nextItems = menuItems.slice(idx + 1);
+            const headerEnd = nextItems.findIndex(i => i.type === 'header');
+            const group = headerEnd === -1 ? nextItems : nextItems.slice(0, headerEnd);
+            return group.some(i => !i.permission || hasPermission(i.permission));
+        }
+        return !item.permission || hasPermission(item.permission);
+    });
 
     return (
         <>
@@ -53,13 +65,13 @@ const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                 ></div>
             )}
 
-            <aside className={`fixed top-0 left-0 bottom-0 bg-slate-100 dark:bg-[#0A0C10] border-r border-black/10 dark:border-white/5 z-50 transition-all duration-300 w-64 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+            <aside className={`fixed top-0 left-0 bottom-0 bg-white dark:bg-[#0A0C10] border-r border-slate-200 dark:border-white/5 z-50 transition-all duration-300 w-64 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                 <div className="flex flex-col h-full">
                     {/* Header */}
                     <div className="p-6 flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2">
                             <img src="/assets/images/logo.png" alt="Logo" className="h-8 w-auto" />
-                            <span className="text-slate-900 dark:text-white font-bold text-lg tracking-tight">OneTap <span className="text-[#04C244]">Admin</span></span>
+                            <span className="text-slate-900 dark:text-white font-extrabold text-lg tracking-tight">Dhiil Tech <span className="text-[#04C244]">Admin</span></span>
                         </Link>
                         <button onClick={toggleSidebar} className="md:hidden text-slate-500 dark:text-slate-400">
                             <X size={20} />
@@ -69,10 +81,10 @@ const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                     {/* Menu */}
                     <nav className="flex-1 overflow-y-auto px-4 py-2 custom-scrollbar">
                         <ul className="space-y-1">
-                            {menuItems.map((item, idx) => (
+                            {filteredMenu.map((item, idx) => (
                                 item.type === 'header' ? (
                                     <li key={idx} className="pt-4 pb-2 px-3">
-                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{item.title}</span>
+                                        <span className="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{item.title}</span>
                                     </li>
                                 ) : (
                                     <li key={idx}>
@@ -80,8 +92,8 @@ const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                                             to={item.path}
                                             onClick={() => window.innerWidth < 768 && toggleSidebar()}
                                             className={({ isActive }) => `
-                                                flex items-center justify-between px-3 py-2.5 rounded-xl transition-all group
-                                                ${isActive ? 'bg-[#04C244] text-black font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
+                                                flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all group font-bold text-xs sm:text-sm
+                                                ${isActive ? 'bg-[#04C244] text-black shadow-md shadow-[#04C244]/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
                                             `}
                                         >
                                             {({ isActive }) => (
@@ -90,7 +102,7 @@ const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                                                         <span className={`${isActive ? 'text-black' : 'text-[#04C244]'} group-hover:scale-110 transition-transform`}>
                                                             {item.icon}
                                                         </span>
-                                                        <span className="text-sm">{item.title}</span>
+                                                        <span>{item.title}</span>
                                                     </div>
                                                     {item.badge && (
                                                         <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-black' : 'bg-[#04C244]'} animate-pulse`}></span>
@@ -104,19 +116,19 @@ const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                         </ul>
                     </nav>
 
-                    {/* Footer */}
-                    <div className="p-4 border-t border-black/10 dark:border-white/5 flex flex-col gap-2">
+                    {/* Footer Theme & Logout */}
+                    <div className="p-4 border-t border-slate-200 dark:border-white/5 flex flex-col gap-2">
                         <button 
                             onClick={toggleTheme}
-                            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-all text-sm font-medium"
+                            className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-all text-xs sm:text-sm font-bold"
                         >
-                            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-                            <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                            {isDark ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-indigo-500" />}
+                            <span>{isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
                         </button>
 
                         <button 
                             onClick={logout}
-                            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-red-400 hover:bg-red-400/10 transition-all text-sm font-medium"
+                            className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all text-xs sm:text-sm font-bold"
                         >
                             <LogOut size={18} />
                             <span>Sign Out</span>

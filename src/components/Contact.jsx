@@ -7,7 +7,7 @@ const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
   const [settings, setSettings] = useState({
-    company_email: 'hello@onetapsolution.com',
+    company_email: 'hello@dhiiltech.com',
     contact_phone: '+252 61 9586339',
     office_location: 'Mogadishu, Somalia'
   });
@@ -74,9 +74,6 @@ const Contact = () => {
               <div>
                 <h4 className="text-lg font-semibold text-white mb-2">Phone</h4>
                 <p className="text-slate-400">{settings.contact_phone}</p>
-                {settings.contact_phone === '+252 61 9586339' && (
-                  <p className="text-slate-400">+252 61 3377606</p>
-                )}
               </div>
             </div>
             

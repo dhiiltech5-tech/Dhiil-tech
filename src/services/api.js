@@ -4,8 +4,7 @@
  * This means any change an admin makes is instantly visible to customers.
  */
 
-const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
-
+export const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 
 export async function getProjects() {
   try {
@@ -147,8 +146,26 @@ export async function getSettings() {
   }
   // Fallback defaults
   return {
-    company_email: 'info@onetapsolution.com',
+    company_email: 'info@dhiiltech.com',
     contact_phone: '+252 61 9586339',
     office_location: 'Mogadishu, Somalia'
   };
 }
+
+/**
+ * Shared Admin Login
+ */
+export async function loginAdmin(email, password) {
+  try {
+    const response = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    return await response.json();
+  } catch (e) {
+    console.error('api.js: login failed', e);
+    return { success: false, message: 'Server connection failed' };
+  }
+}
+

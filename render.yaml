@@ -4,10 +4,9 @@ services:
   # ─────────────────────────────────────────────
   - type: web
     name: onetap-backend
-    runtime: python
-    # No rootDir so it uses project root
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    runtime: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: FLASK_ENV
         value: production
@@ -15,16 +14,8 @@ services:
         generateValue: true          # Render auto-generates a strong random value
       - key: JWT_SECRET_KEY
         generateValue: true
-      - key: DB_HOST
-        sync: false                  # You will fill these in Render dashboard
-      - key: DB_USER
-        sync: false
-      - key: DB_PASSWORD
-        sync: false
-      - key: DB_NAME
-        sync: false
-      - key: DB_PORT
-        value: "3306"
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_tMPB1r3DLayR@ep-tiny-pond-axoshw1m.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require
       - key: FRONTEND_URL
         sync: false                  # Set to your Render static site URL after deploy
 

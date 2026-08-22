@@ -1,23 +1,8 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Target, Eye, Users, Award, Zap, Globe, ShieldCheck, TrendingUp } from 'lucide-react';
-import { getTeam } from '../services/api';
 
 const AboutPage = () => {
-  const [teamMembers, setTeamMembers] = useState([]);
-
-  useEffect(() => {
-    let mounted = true;
-    const fetchData = async () => {
-      const teamData = await getTeam();
-      if (mounted) {
-        setTeamMembers(teamData);
-      }
-    };
-    fetchData();
-    return () => { mounted = false; };
-  }, []);
 
   const values = [
     { icon: <Zap size={22} />, title: 'Innovation', desc: 'We embrace the latest technologies to deliver cutting-edge digital solutions.' },
@@ -70,7 +55,7 @@ const AboutPage = () => {
                 <div className="absolute -inset-4 bg-[#04C244] rounded-2xl opacity-10 blur-2xl"></div>
                 <img
                   src="/assets/images/about.png"
-                  alt="OneTap Solution Team"
+                  alt="Dhiil Tech Team"
                   className="relative rounded-2xl border border-white/10 shadow-2xl w-full object-cover"
                 />
               </div>
@@ -81,7 +66,7 @@ const AboutPage = () => {
                 Who We Are
               </span>
               <p className="text-slate-400 leading-relaxed text-lg">
-                OneTap Solution is a modern technology company dedicated to delivering world-class digital innovation to Somalia and beyond. Founded with a vision to bridge the technology gap, we specialize in building smart, modern, and impactful digital experiences.
+                Dhiil Tech is a modern technology company dedicated to delivering world-class digital innovation to Somalia and beyond. Founded with a vision to bridge the technology gap, we specialize in building smart, modern, and impactful digital experiences.
               </p>
               <p className="text-slate-400 leading-relaxed">
                 From web and mobile applications to multimedia production and digital marketing, we offer end-to-end technology services that help businesses scale and communities thrive.
@@ -146,42 +131,6 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* ── Team ── */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <motion.div {...fadeUp} className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Meet the <span className="text-[#04C244]">Team</span></h2>
-            <p className="text-slate-400 max-w-xl mx-auto">A passionate group of innovators, designers, and engineers working together to shape Somalia's digital future.</p>
-          </motion.div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto">
-            {teamMembers.map((member, i) => (
-              <motion.div key={i} {...fadeUp} transition={{ duration: 0.5, delay: i * 0.15 }} className="glass-card overflow-hidden text-center group flex flex-col items-center p-4 sm:p-0">
-                <div className="relative overflow-hidden w-20 h-20 sm:w-full sm:h-56 rounded-full sm:rounded-none flex items-center justify-center bg-linear-to-br from-[#0A0C10] via-slate-900 to-black select-none sm:border-b border-white/5 shrink-0">
-                  {(member.image || member.img) ? (
-                    <img
-                      src={member.image || member.img}
-                      alt={member.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-[#0A0C10] via-slate-900 to-black select-none relative">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(4,194,68,0.15)_0%,transparent_70%)]"></div>
-                      <span className="text-3xl sm:text-6xl font-black text-[#04C244]/80 tracking-widest font-mono transform group-hover:scale-110 group-hover:text-[#04C244] transition-all duration-500 drop-shadow-[0_0_15px_rgba(4,194,68,0.3)]">
-                        {member.name ? member.name.charAt(0).toUpperCase() : '?'}
-                      </span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent hidden sm:block"></div>
-                </div>
-                <div className="p-3 sm:p-6 text-center w-full">
-                  <h4 className="text-white font-bold text-sm sm:text-lg truncate">{member.name}</h4>
-                  <p className="text-[#04C244] text-xs sm:text-sm mt-0.5 sm:mt-1 truncate">{member.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA ── */}
       <section className="dark-cta py-20 relative overflow-hidden">

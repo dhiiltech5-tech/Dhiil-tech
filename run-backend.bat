@@ -1,6 +1,5 @@
 @echo off
-echo Starting Flask Backend...
+echo Starting Node.js Backend...
 cd backend
-call venv\Scripts\activate.bat
-python app.py
+npm start
 pause

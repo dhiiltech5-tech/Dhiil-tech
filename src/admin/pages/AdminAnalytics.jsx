@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAdmin } from '../context/AdminContext';
+import { API_BASE } from '../../services/api';
 
 const AdminAnalytics = () => {
     const { user } = useAdmin();
@@ -14,23 +15,42 @@ const AdminAnalytics = () => {
 
     useEffect(() => {
         const fetchAnalytics = async () => {
-            if (!user?.token) return;
+            if (!user?.token) {
+                setLoading(false);
+                return;
+            }
             try {
-                const res = await fetch('http://localhost:5000/api/stats/analytics', {
+                const res = await fetch(`${API_BASE}/stats/analytics`, {
                     headers: { 'Authorization': `Bearer ${user.token}` }
                 });
                 const result = await res.json();
-                if (result.success) {
+                if (result.success && result.data) {
                     setAnalytics(result.data);
+                } else {
+                    setAnalytics(getFallbackAnalytics());
                 }
             } catch (err) {
                 console.error('Failed to load analytics:', err);
+                setAnalytics(getFallbackAnalytics());
             } finally {
                 setLoading(false);
             }
         };
         fetchAnalytics();
     }, [user?.token]);
+
+    const getFallbackAnalytics = () => ({
+        totalVisitors: 0,
+        newVisitors: { value: 0, trend: '0%', isPositive: true },
+        monthlyChart: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(month => ({
+            month, pageViews: 0, uniqueVisitors: 0
+        })),
+        devices: [
+            { name: 'Mobile', value: 0 },
+            { name: 'Desktop', value: 100 },
+            { name: 'Tablet', value: 0 }
+        ]
+    });
 
     // Chart max for scaling bars
     const maxPageViews   = analytics ? Math.max(...analytics.monthlyChart.map(m => m.pageViews),   1) : 1;

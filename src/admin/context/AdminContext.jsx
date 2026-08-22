@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
+import { loginAdmin, API_BASE } from '../../services/api';
 
 const AdminContext = createContext();
 
@@ -7,6 +8,7 @@ const APP_DATA_KEY = 'ots-app-data';
 const SESSION_KEY = 'ots-admin-session';
 
 const defaultData = {
+    // ... same default data ...
     stats: {
         projects: 0,
         clients: 20,
@@ -19,21 +21,20 @@ const defaultData = {
     services: [],
     messages: [],
     news: [],
-    team: [],
     testimonials: []
 };
 
 const COLLECTION_APIS = {
-    users: 'http://localhost:5000/api/users/',
-    projects: 'http://localhost:5000/api/projects/',
-    services: 'http://localhost:5000/api/services/',
-    team: 'http://localhost:5000/api/team/',
-    testimonials: 'http://localhost:5000/api/testimonials/',
-    news: 'http://localhost:5000/api/news/',
-    messages: 'http://localhost:5000/api/contact/'
+    users: `${API_BASE}/users/`,
+    projects: `${API_BASE}/projects/`,
+    services: `${API_BASE}/services/`,
+    testimonials: `${API_BASE}/testimonials/`,
+    news: `${API_BASE}/news/`,
+    messages: `${API_BASE}/contact/`
 };
 
 export const AdminProvider = ({ children }) => {
+    // ... states ...
     const [data, setData] = useState(() => {
         try {
             const savedData = localStorage.getItem(APP_DATA_KEY);
@@ -64,15 +65,9 @@ export const AdminProvider = ({ children }) => {
         const cleanPassword = password.trim();
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: cleanEmail, password: cleanPassword })
-            });
+            const result = await loginAdmin(cleanEmail, cleanPassword);
 
-            const result = await response.json();
-
-            if (!response.ok || !result.success) {
+            if (!result.success) {
                 return { success: false, message: result.message || 'Invalid email or password' };
             }
 
@@ -110,7 +105,6 @@ export const AdminProvider = ({ children }) => {
                     usersRes,
                     projectsRes,
                     servicesRes,
-                    teamRes,
                     testimonialsRes,
                     messagesRes,
                     newsRes,
@@ -119,18 +113,16 @@ export const AdminProvider = ({ children }) => {
                     fetch(COLLECTION_APIS.users, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
                     fetch(COLLECTION_APIS.projects, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
                     fetch(COLLECTION_APIS.services, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
-                    fetch(COLLECTION_APIS.team, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
                     fetch(COLLECTION_APIS.testimonials, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
                     fetch(COLLECTION_APIS.messages, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
                     fetch(COLLECTION_APIS.news, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
-                    fetch('http://localhost:5000/api/stats/dashboard', { headers }).then(r => r.json()).catch(() => ({ success: false, data: null }))
+                    fetch(`${API_BASE}/stats/dashboard`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: null }))
                 ]);
 
                 setData(prev => {
                     const u = usersRes.success ? usersRes.data : prev.users;
                     const p = projectsRes.success ? projectsRes.data : prev.projects;
                     const s = servicesRes.success ? servicesRes.data : prev.services;
-                    const t = teamRes.success ? teamRes.data : prev.team;
                     const test = testimonialsRes.success ? testimonialsRes.data : prev.testimonials;
                     const msg = messagesRes.success ? messagesRes.data : prev.messages;
                     const news = newsRes.success ? newsRes.data : prev.news;
@@ -141,7 +133,6 @@ export const AdminProvider = ({ children }) => {
                         users: u,
                         projects: p,
                         services: s,
-                        team: t,
                         testimonials: test,
                         messages: msg,
                         news: news,

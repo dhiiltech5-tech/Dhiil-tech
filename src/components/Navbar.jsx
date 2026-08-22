@@ -1,33 +1,53 @@
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import {
   Menu,
   X,
   Moon,
   Sun,
-  ShoppingBag,
-  Sliders,
-  User,
-  ChevronRight,
-  LogOut,
   Compass,
   Briefcase,
   Layers,
-  MessageSquare,
-  Settings,
   Shield,
   ArrowRight,
   Home,
   Newspaper,
-  Phone
+  Phone,
+  LayoutDashboard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  // Lazy initializer — reads localStorage once on first render
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [adminUser, setAdminUser] = useState(null);
+
+  useEffect(() => {
+    // Check if an admin session is active
+    const checkAdminSession = () => {
+      const stored = localStorage.getItem('ots-admin-session');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed && parsed.token) {
+            setIsAdminLoggedIn(true);
+            setAdminUser(parsed);
+            return;
+          }
+        } catch {
+          // Ignore json parse error
+        }
+      }
+      setIsAdminLoggedIn(false);
+      setAdminUser(null);
+    };
+
+    checkAdminSession();
+    window.addEventListener('storage', checkAdminSession);
+    return () => window.removeEventListener('storage', checkAdminSession);
+  }, []);
 
   // Sync the HTML class whenever isDark changes
   useEffect(() => {
@@ -87,17 +107,38 @@ const Navbar = () => {
 
   return (
     <>
+      {/* Active Admin Mode Floating Header Bar */}
+      {isAdminLoggedIn && (
+        <div className="bg-slate-950 border-b border-[#04C244]/30 py-2 px-6 fixed top-0 left-0 right-0 z-60 text-white text-xs font-bold flex items-center justify-between shadow-lg">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#04C244] animate-pulse"></span>
+            <span className="text-[#04C244] font-extrabold">ADMIN MODE ACTIVE:</span>
+            <span className="text-slate-300 hidden sm:inline">Viewing public site as <strong className="text-white">{adminUser?.name || 'Super Admin'}</strong></span>
+          </div>
+          <Link 
+            to="/admin/dashboard" 
+            className="flex items-center gap-1.5 px-3 py-1 bg-[#04C244] hover:bg-[#03a837] text-black font-extrabold rounded-full text-[11px] transition-all shadow-md shadow-[#04C244]/20"
+          >
+            <LayoutDashboard size={13} />
+            <span>Return to Admin Dashboard</span>
+            <ArrowRight size={12} />
+          </Link>
+        </div>
+      )}
+
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
+          isAdminLoggedIn ? 'top-8' : 'top-0'
+        } ${
           isScrolled ? 'bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-black/5 dark:border-white/10 py-4' : 'bg-transparent py-6'
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-3 group">
-            <img src="/assets/images/logo.png" alt="OneTap Solution" className="h-14 w-auto group-hover:scale-105 transition-transform" />
+            <img src="/assets/images/logo.png" alt="Dhiil Tech" className="h-14 w-auto group-hover:scale-105 transition-transform" />
             <span className="text-2xl font-bold text-black dark:text-white tracking-wide">
-              OneTap <span className="text-[#04C244]">Solution</span>
+              Dhiil <span className="text-[#04C244]">Tech</span>
             </span>
           </NavLink>
 
@@ -119,6 +160,17 @@ const Navbar = () => {
                 </li>
               ))}
             </ul>
+
+            {/* Admin Badge in Navbar if logged in */}
+            {isAdminLoggedIn && (
+              <Link
+                to="/admin/dashboard"
+                className="px-3.5 py-1.5 bg-[#04C244]/15 border border-[#04C244]/30 hover:bg-[#04C244]/25 text-[#04C244] rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-xs"
+              >
+                <Shield size={14} />
+                <span>Admin Panel</span>
+              </Link>
+            )}
 
             {/* Theme Toggle */}
             <motion.button
@@ -144,6 +196,15 @@ const Navbar = () => {
 
           {/* Mobile Menu Toggle Button */}
           <div className="md:hidden flex items-center gap-3">
+            {isAdminLoggedIn && (
+              <Link
+                to="/admin/dashboard"
+                className="px-2.5 py-1 bg-[#04C244] text-black text-[10px] font-extrabold rounded-full flex items-center gap-1"
+              >
+                <Shield size={12} />
+                <span>Admin</span>
+              </Link>
+            )}
             <motion.button
               onClick={toggleTheme}
               whileTap={{ scale: 0.85 }}
@@ -162,7 +223,6 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop blur overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -171,7 +231,6 @@ const Navbar = () => {
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-55 md:hidden"
             />
 
-            {/* Sliding Drawer Container */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -179,12 +238,11 @@ const Navbar = () => {
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
               className="fixed top-0 right-0 bottom-0 w-[85%] max-w-[380px] bg-white dark:bg-zinc-950 z-60 p-6 flex flex-col shadow-2xl border-l border-slate-200 dark:border-zinc-800 md:hidden"
             >
-              {/* Drawer Header */}
               <div className="flex items-center justify-between pb-5 border-b border-slate-100 dark:border-zinc-900">
                 <div className="flex items-center gap-2.5">
-                  <img src="/assets/images/logo.png" alt="OneTap" className="h-10 w-auto" />
+                  <img src="/assets/images/logo.png" alt="Dhiil Tech" className="h-10 w-auto" />
                   <span className="text-lg font-bold text-black dark:text-white">
-                    OneTap <span className="text-[#04C244]">Solution</span>
+                    Dhiil <span className="text-[#04C244]">Tech</span>
                   </span>
                 </div>
                 <button
@@ -195,10 +253,8 @@ const Navbar = () => {
                 </button>
               </div>
 
-              {/* Drawer Content */}
               <div className="flex-1 mt-6 flex flex-col justify-between overflow-y-auto pr-1">
                 <div className="flex flex-col h-full justify-between">
-                  {/* Client Navigation */}
                   <div className="grid grid-cols-2 gap-2">
                     {navLinks.map((link) => {
                       const Icon = link.icon;
@@ -222,8 +278,23 @@ const Navbar = () => {
                     })}
                   </div>
 
-                  {/* Client Call-To-Action Card */}
-                  <div className="mt-8 p-5 rounded-2xl bg-linear-to-br from-slate-50 to-slate-100 dark:from-zinc-900 dark:to-zinc-950 border border-slate-100 dark:border-zinc-800/60 shadow-sm">
+                  {isAdminLoggedIn && (
+                    <div className="mt-4 p-4 rounded-2xl bg-[#04C244]/10 border border-[#04C244]/30">
+                      <p className="text-xs font-extrabold text-[#04C244] mb-2 flex items-center gap-1.5">
+                        <Shield size={14} /> Admin Mode Active
+                      </p>
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#04C244] text-black text-xs font-extrabold transition-all shadow-md shadow-[#04C244]/20"
+                      >
+                        <LayoutDashboard size={14} />
+                        Return to Admin Dashboard
+                      </Link>
+                    </div>
+                  )}
+
+                  <div className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-zinc-900 dark:to-zinc-950 border border-slate-100 dark:border-zinc-800/60 shadow-sm">
                     <h4 className="text-sm font-bold text-black dark:text-white mb-1">
                       Order Any Service!
                     </h4>
@@ -233,7 +304,7 @@ const Navbar = () => {
                     <NavLink
                       to="/contact"
                       onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#04C244] hover:bg-[#03a83b] text-white text-xs font-bold transition-all shadow-md shadow-[#04C244]/10 hover:scale-[1.02]"
+                      className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#04C244] text-black text-xs font-bold transition-all shadow-md shadow-[#04C244]/10"
                     >
                       Order Now
                       <ArrowRight size={14} />

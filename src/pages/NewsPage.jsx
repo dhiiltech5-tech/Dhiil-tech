@@ -54,7 +54,7 @@ const NewsPage = () => {
             transition={{ delay: 0.2 }}
             className="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
           >
-            Stay updated with the latest trends, company news, and insights from OneTap Solution.
+            Stay updated with the latest trends, company news, and insights from Dhiil Tech.
           </motion.p>
         </div>
       </section>
@@ -83,7 +83,7 @@ const NewsPage = () => {
                   </div>
                   <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full">
                     <User size={14} className="text-[#04C244]" />
-                    <span>{item.author || 'OneTap Team'}</span>
+                    <span>{item.author || 'Dhiil Tech Team'}</span>
                   </div>
                 </div>
 

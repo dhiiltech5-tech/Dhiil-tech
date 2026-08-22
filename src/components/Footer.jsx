@@ -54,9 +54,9 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-1 space-y-5">
             <Link to="/" className="flex items-center gap-3">
-              <img src="/assets/images/logo.png" alt="OneTap Solution Logo" className="h-16 w-auto" />
+              <img src="/assets/images/logo.png" alt="Dhiil Tech Logo" className="h-16 w-auto" />
               <span className="text-xl font-bold text-white tracking-wide">
-                OneTap <span className="text-[#04C244]">Solution</span>
+                Dhiil <span className="text-[#04C244]">Tech</span>
               </span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
@@ -69,7 +69,6 @@ const Footer = () => {
                 { href: 'https://www.facebook.com/profile.php?id=61589772293579', icon: 'fab fa-facebook-f' },
                 { href: 'https://www.instagram.com/onetap.so?igsh=MW5qaDk3M3N0NnRneQ%3D%3D&utm_source=qr', icon: 'fab fa-instagram' },
                 { href: 'https://linkedin.com/company/onetapsolution', icon: 'fab fa-linkedin-in' },
-                { href: 'https://www.tiktok.com/@onetap.solution?_r=1&_t=ZS-96PoNmViUc5', icon: 'fab fa-tiktok' },
                 { href: 'https://wa.me/252619586339', icon: 'fab fa-whatsapp' },
               ].map((s, i) => (
                 <a
@@ -215,14 +214,8 @@ const Footer = () => {
         <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <p className="text-slate-600 text-xs">
-              © {currentYear} <span className="text-slate-500">OneTap Solution</span>. All Rights Reserved.
+              © {currentYear} <span className="text-slate-500">Dhiil Tech</span>. All Rights Reserved.
             </p>
-            <Link 
-              to="/admin/login" 
-              className="admin-link text-xs select-none font-medium transition-colors"
-            >
-              login
-            </Link>
           </div>
           <p className="text-slate-700 text-xs">
             Built with 💚 in Somalia

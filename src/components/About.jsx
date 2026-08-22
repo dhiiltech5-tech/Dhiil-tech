@@ -18,7 +18,7 @@ const About = () => {
               <div className="absolute -inset-4 bg-linear-to-r from-[#04C244] to-[#04C244] rounded-2xl opacity-20 blur-xl"></div>
               <img 
                 src="/assets/images/about.png" 
-                alt="OneTap Solution Team" 
+                alt="Dhiil Tech Team" 
                 className="relative rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl w-full object-cover transition-colors"
               />
             </div>
@@ -38,7 +38,7 @@ const About = () => {
               About <span className="text-gradient">Us</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg transition-colors">
-              OneTap Solution is a modern technology company dedicated to delivering world-class digital innovation to our country.
+              Dhiil Tech is a modern technology company dedicated to delivering world-class digital innovation to our country.
               We focus on bridging the technology gap by creating smart, modern, and impactful digital experiences that empower businesses and communities.
             </p>
             <div className="pt-4">

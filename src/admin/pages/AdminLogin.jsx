@@ -48,7 +48,7 @@ const AdminLogin = () => {
                         <img src="/assets/images/logo.png" alt="Logo" className="h-16 w-auto mx-auto group-hover:scale-110 transition-transform duration-500" />
                     </Link>
                     <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Welcome Back</h1>
-                    <p className="text-slate-500 text-sm font-medium">OneTap Solution </p>
+                    <p className="text-slate-500 text-sm font-medium">Dhiil Tech Admin Portal</p>
                 </div>
 
                 <div className="bg-[#0A0C10]/80 backdrop-blur-2xl border border-white/5 rounded-[32px] p-10 shadow-2xl shadow-black">

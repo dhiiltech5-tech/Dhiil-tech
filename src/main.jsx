@@ -3,33 +3,38 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
+import { getProjects, getServices, getTeam, getTestimonials, getNews, API_BASE } from './services/api';
+
 // Fetch all public data from MySQL and cache to localStorage
 const bootstrapPublicData = async () => {
     try {
-        const [projectsRes, servicesRes, teamRes, testimonialsRes, newsRes, statsRes] = await Promise.all([
-            fetch('http://localhost:5000/api/projects/').then(r => r.json()).catch(() => ({ success: false, data: [] })),
-            fetch('http://localhost:5000/api/services/').then(r => r.json()).catch(() => ({ success: false, data: [] })),
-            fetch('http://localhost:5000/api/team/').then(r => r.json()).catch(() => ({ success: false, data: [] })),
-            fetch('http://localhost:5000/api/testimonials/').then(r => r.json()).catch(() => ({ success: false, data: [] })),
-            fetch('http://localhost:5000/api/news/').then(r => r.json()).catch(() => ({ success: false, data: [] })),
-            fetch('http://localhost:5000/api/stats/track-visit', { method: 'POST' }).then(r => r.json()).catch(() => ({ success: false, data: { visitorCount: 1240 } }))
+        const [projects, services, team, testimonials, news] = await Promise.all([
+            getProjects(),
+            getServices(),
+            getTeam(),
+            getTestimonials(),
+            getNews()
         ]);
+
+        const statsRes = await fetch(`${API_BASE}/stats/track-visit`, { method: 'POST' })
+            .then(r => r.json())
+            .catch(() => ({ success: false, data: { visitorCount: 1240 } }));
 
         const raw = localStorage.getItem('ots-app-data');
         const currentData = raw ? JSON.parse(raw) : {};
 
         const updatedData = {
             ...currentData,
-            projects: projectsRes.success ? projectsRes.data : (currentData.projects || []),
-            services: servicesRes.success ? servicesRes.data : (currentData.services || []),
-            team: teamRes.success ? teamRes.data : (currentData.team || []),
-            testimonials: testimonialsRes.success ? testimonialsRes.data : (currentData.testimonials || []),
-            news: newsRes.success ? newsRes.data : (currentData.news || []),
+            projects: projects,
+            services: services,
+            team: team,
+            testimonials: testimonials,
+            news: news,
             visitorCount: statsRes.success && statsRes.data ? statsRes.data.visitorCount : (currentData.visitorCount || 1240),
             stats: {
-                projects: projectsRes.success ? projectsRes.data.length : (currentData.stats?.projects || 0),
+                projects: projects.length,
                 clients: 20,
-                services: servicesRes.success ? servicesRes.data.length : (currentData.stats?.services || 0),
+                services: services.length,
                 satisfaction: 99
             }
         };
