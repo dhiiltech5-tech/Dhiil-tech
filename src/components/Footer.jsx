@@ -7,7 +7,7 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [settings, setSettings] = useState({
-    company_email: 'hello@onetapsolution.com',
+    company_email: 'hello@dhiiltech.com',
     contact_phone: '+252 61 9586339',
     office_location: 'Mogadishu, Somalia'
   });
@@ -67,8 +67,8 @@ const Footer = () => {
             <div className="flex flex-wrap gap-2.5 pt-1">
               {[
                 { href: 'https://www.facebook.com/profile.php?id=61589772293579', icon: 'fab fa-facebook-f' },
-                { href: 'https://www.instagram.com/onetap.so?igsh=MW5qaDk3M3N0NnRneQ%3D%3D&utm_source=qr', icon: 'fab fa-instagram' },
-                { href: 'https://linkedin.com/company/onetapsolution', icon: 'fab fa-linkedin-in' },
+                { href: 'https://www.instagram.com/dhiiltech?igsh=MW5qaDk3M3N0NnRneQ%3D%3D&utm_source=qr', icon: 'fab fa-instagram' },
+                { href: 'https://linkedin.com/company/dhiiltech', icon: 'fab fa-linkedin-in' },
                 { href: 'https://wa.me/252619586339', icon: 'fab fa-whatsapp' },
               ].map((s, i) => (
                 <a

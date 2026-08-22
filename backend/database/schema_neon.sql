@@ -235,9 +235,9 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT 2, id FROM permissions
 ON CONFLICT DO NOTHING;
 
--- Insert Default Super Admin User (email: admin@onetap.com, password: admin123)
+-- Insert Default Super Admin User (email: admin@dhiiltech.com, password: admin123)
 INSERT INTO users (name, email, password_hash, role_id, status) VALUES
-('Dhiil Tech Admin', 'admin@onetap.com', '$2a$10$e8w.x9T3.pU9N5L6j5G9d.V/o2Z1lW.E.R9d4eX1m5/O5GZ8U6k1s', 1, 'Active')
+('Dhiil Tech Admin', 'admin@dhiiltech.com', '$2a$10$e8w.x9T3.pU9N5L6j5G9d.V/o2Z1lW.E.R9d4eX1m5/O5GZ8U6k1s', 1, 'Active')
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert Default Settings

@@ -6,7 +6,7 @@ export async function getSettings(req, res) {
     let settings = await Setting.findOne();
     if (!settings) {
       settings = await Setting.create({
-        company_email: 'info@onetapsolution.com',
+        company_email: 'info@dhiiltech.com',
         contact_phone: '+252 61 9586339',
         office_location: 'Mogadishu, Somalia',
         projects_done: 1,

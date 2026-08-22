@@ -77,7 +77,7 @@ async function seed() {
     }
 
     // 3. Super Admin User
-    const adminEmail = 'admin@onetap.com';
+    const adminEmail = 'admin@dhiiltech.com';
     let adminUser = await User.findOne({ where: { email: adminEmail } });
 
     if (!adminUser) {

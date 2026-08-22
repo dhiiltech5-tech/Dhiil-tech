@@ -3,7 +3,7 @@ services:
   # BACKEND — Flask / Gunicorn
   # ─────────────────────────────────────────────
   - type: web
-    name: onetap-backend
+    name: dhiiltech-backend
     runtime: node
     buildCommand: cd backend && npm install
     startCommand: cd backend && npm start
@@ -23,13 +23,13 @@ services:
   # FRONTEND — React / Vite (Static Site)
   # ─────────────────────────────────────────────
   - type: web
-    name: onetap-frontend
+    name: dhiiltech-frontend
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        sync: false                  # Set to your onetap-backend Render URL
+        sync: false                  # Set to your dhiiltech-backend Render URL
     routes:
       - type: rewrite
         source: /*

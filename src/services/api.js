@@ -1,5 +1,5 @@
 /**
- * api.js — Shared data layer for OneTap Solution
+ * api.js — Shared data layer for Dhiil Tech
  * Reads from the same localStorage store the Admin panel writes to.
  * This means any change an admin makes is instantly visible to customers.
  */

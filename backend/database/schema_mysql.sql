@@ -3,8 +3,8 @@
 -- Copy and paste this file into phpMyAdmin / MySQL Workbench
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS `onetap_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `onetap_db`;
+CREATE DATABASE IF NOT EXISTS `dhiiltech_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `dhiiltech_db`;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -242,7 +242,7 @@ INSERT IGNORE INTO `role_permissions` (`role_id`, `permission_id`)
 SELECT 2, `id` FROM `permissions`;
 
 INSERT IGNORE INTO `users` (`name`, `email`, `password_hash`, `role_id`, `status`) VALUES
-('Dhiil Tech Admin', 'admin@onetap.com', '$2a$10$e8w.x9T3.pU9N5L6j5G9d.V/o2Z1lW.E.R9d4eX1m5/O5GZ8U6k1s', 1, 'Active');
+('Dhiil Tech Admin', 'admin@dhiiltech.com', '$2a$10$e8w.x9T3.pU9N5L6j5G9d.V/o2Z1lW.E.R9d4eX1m5/O5GZ8U6k1s', 1, 'Active');
 
 INSERT IGNORE INTO `settings` (`company_email`, `contact_phone`, `office_location`, `projects_done`, `trusted_partners`, `services_provided`, `satisfaction_rate`) VALUES
 ('info@dhiiltech.com', '+252 61 9586339', 'Mogadishu, Somalia', 1, 20, 7, 3);
