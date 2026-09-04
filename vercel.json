@@ -4,10 +4,10 @@
             "root": ".",
             "framework": "vite"
         },
-        "backend": {
-            "root": "backend",
-            "entrypoint": "index.js"
-        }
+       "backend": {
+    "root": "backend",
+    "entrypoint": "src/index.js"
+}
     },
     "rewrites": [
         {
