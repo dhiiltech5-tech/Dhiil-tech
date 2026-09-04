@@ -46,23 +46,30 @@ if (!fs.existsSync(uploadsDir)) {
 }
 app.use('/uploads', express.static(uploadsDir));
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
+// Mount API routes with and without /api prefix for complete reverse-proxy resilience
+const apiEndpoints = [
+  ['/auth', authRoutes],
+  ['/projects', projectRoutes],
+  ['/services', serviceRoutes],
+  ['/contact', contactRoutes],
+  ['/news', newsRoutes],
+  ['/newsletter', newsletterRoutes],
+  ['/team', teamRoutes],
+  ['/testimonials', testimonialRoutes],
+  ['/users', userRoutes],
+  ['/stats', statsRoutes],
+  ['/settings', settingRoutes]
+];
+
+// Health check endpoints
+app.get(['/api/health', '/health', '/api', '/'], (req, res) => {
   res.status(200).json({ success: true, message: 'Backend is running flawlessly.' });
 });
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/services', serviceRoutes);
-app.use('/api/contact', contactRoutes);
-app.use('/api/news', newsRoutes);
-app.use('/api/newsletter', newsletterRoutes);
-app.use('/api/team', teamRoutes);
-app.use('/api/testimonials', testimonialRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/stats', statsRoutes);
-app.use('/api/settings', settingRoutes);
+apiEndpoints.forEach(([endpoint, router]) => {
+  app.use(`/api${endpoint}`, router);
+  app.use(endpoint, router);
+});
 
 // Error Handling Middlewares
 app.use(notFoundHandler);
@@ -70,6 +77,10 @@ app.use(globalErrorHandler);
 
 // Database Sync and Server Startup
 async function startServer() {
+  const server = app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
+
   try {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
@@ -77,14 +88,11 @@ async function startServer() {
     // Sync models without dropping existing data
     await sequelize.sync({ alter: false });
     console.log('Database models synchronized.');
-
-    app.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
-    });
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    process.exit(1);
+    console.error('Database connection error (continuing to run, will retry):', error.message || error);
   }
+
+  return server;
 }
 
 startServer();

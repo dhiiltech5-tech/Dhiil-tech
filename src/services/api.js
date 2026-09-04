@@ -4,7 +4,10 @@
  * This means any change an admin makes is instantly visible to customers.
  */
 
-export const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
+const rawApiUrl = import.meta.env.VITE_API_URL;
+export const API_BASE = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`)
+  : (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
 
 export async function getProjects() {
   try {
