@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import pg from 'pg'; // explicit import — required for Vercel serverless
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -18,6 +19,7 @@ if (databaseUrl) {
 
   sequelize = new Sequelize(databaseUrl, {
     dialect,
+    dialectModule: isPostgres ? pg : undefined, // force-load pg explicitly
     logging: false,
     dialectOptions: isPostgres ? {
       ssl: {
@@ -26,7 +28,7 @@ if (databaseUrl) {
       }
     } : {},
     pool: {
-      max: 10,
+      max: 5,
       min: 0,
       acquire: 30000,
       idle: 10000
@@ -43,6 +45,7 @@ if (databaseUrl) {
     host: dbHost,
     port: Number(dbPort),
     dialect: 'postgres',
+    dialectModule: pg, // force-load pg explicitly
     logging: false,
     dialectOptions: {
       ssl: {
@@ -51,7 +54,7 @@ if (databaseUrl) {
       }
     },
     pool: {
-      max: 10,
+      max: 5,
       min: 0,
       acquire: 30000,
       idle: 10000
