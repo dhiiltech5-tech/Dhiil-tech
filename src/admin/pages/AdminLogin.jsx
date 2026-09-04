@@ -1,0 +1,133 @@
+import { useState } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAdmin } from '../context/AdminContext';
+import { Mail, Lock, ArrowRight, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const AdminLogin = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const { login } = useAdmin();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || "/admin/dashboard";
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setIsLoading(true);
+
+        const result = await login(email, password);
+
+        if (result.success) {
+            navigate(from, { replace: true });
+        } else {
+            setError(result.message || 'Invalid email or password.');
+            setIsLoading(false);
+        }
+    };
+
+
+    return (
+        <div className="min-h-screen bg-[#040806] flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Background Decor */}
+            <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-[#00FF66]/10 rounded-full blur-[140px] pointer-events-none"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-[#04C244]/15 rounded-full blur-[140px] pointer-events-none"></div>
+
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-md relative z-10"
+            >
+                <div className="text-center mb-10">
+                    <Link to="/" className="inline-block mb-6 group">
+                        <img src="/assets/images/logo.png" alt="Logo" className="h-20 w-20 rounded-full object-cover mx-auto border-2 border-[#00E676]/40 shadow-xl shadow-[#00E676]/25 group-hover:scale-110 transition-transform duration-500" />
+                    </Link>
+                    <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2 font-poppins">Welcome Back</h1>
+                    <p className="text-slate-400 text-sm font-medium">Dhiil Tech Admin Portal</p>
+                </div>
+
+                <div className="bg-[#0A140E]/80 backdrop-blur-2xl border border-[#00FF66]/20 rounded-[32px] p-10 shadow-2xl shadow-black">
+                    {error && (
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl p-4 flex items-center gap-3 mb-6 text-sm font-medium"
+                        >
+                            <AlertCircle size={18} />
+                            <span>{error}</span>
+                        </motion.div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                            <div className="relative group">
+                                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00FF66] transition-colors" />
+                                <input 
+                                    type="email" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter your email"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white focus:outline-none focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/30 transition-all text-sm"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                            <div className="relative group">
+                                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00FF66] transition-colors" />
+                                <input 
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter your password"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-12 text-white focus:outline-none focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/30 transition-all text-sm"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#00FF66] transition-colors focus:outline-none"
+                                    tabIndex={-1}
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="w-full bg-gradient-to-r from-[#00FF66] to-[#04C244] hover:shadow-[0_0_30px_rgba(0,255,102,0.35)] disabled:opacity-50 text-black font-extrabold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl mt-8 group"
+                        >
+                            {isLoading ? (
+                                <Loader2 size={20} className="animate-spin" />
+                            ) : (
+                                <>
+                                    <span>Login</span>
+                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="mt-8 text-center pt-8 border-t border-white/5">
+                        <Link to="/" className="text-xs font-bold text-slate-400 hover:text-[#00FF66] transition-colors uppercase tracking-widest">
+                            Return to Website
+                        </Link>
+                    </div>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
+export default AdminLogin;

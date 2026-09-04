@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+:root {
+  --font-sans: "Inter", "Poppins", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  
+  --color-primary: #00E676;
+  --color-secondary: #04C244;
+  --color-accent: #00FF87;
+  --color-dark: #02140B;
+  --color-darker: #010D07;
+  --color-surface: #042113;
+
+  --background: 150 50% 4%;
+  --foreground: 0 0% 98%;
+}
+
+body {
+  background-color: #02140B;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 230, 118, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(4, 194, 68, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 0% 50%, rgba(0, 230, 118, 0.06) 0%, transparent 50%);
+  background-attachment: fixed;
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.glass-card {
+  background: rgba(5, 28, 18, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 230, 118, 0.18);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+  border-radius: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 230, 118, 0.45);
+  box-shadow: 0 20px 40px -10px rgba(0, 230, 118, 0.25);
+  transform: translateY(-2px);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 230, 118, 0.5), transparent);
+}
+
+.glass-nav {
+  background-color: rgba(2, 20, 11, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(0, 230, 118, 0.15);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #00E676 0%, #04C244 50%, #00FF87 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #00E676 0%, #04C244 100%);
+}
+
+.glow-box-emerald {
+  box-shadow: 0 0 30px rgba(0, 230, 118, 0.3);
+}
+
+.glow-text-emerald {
+  text-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+}
+
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Page Hero Banner Overlay */
+.page-hero {
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.1) 0%, rgba(2, 20, 11, 0.95) 100%);
+}
+
+/* Stats section unified dark green bg */
+.stats-section {
+  background-color: rgba(5, 28, 18, 0.75);
+  border-color: rgba(0, 230, 118, 0.2);
+}
+.stats-number {
+  color: #00E676;
+}
+.stats-label {
+  color: #94a3b8;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 230, 118, 0.25);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 230, 118, 0.5);
+}
