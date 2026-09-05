@@ -7,15 +7,27 @@
 const rawApiUrl = import.meta.env.VITE_API_URL;
 
 function getApiBase() {
-  // If running on HTTPS (production) and VITE_API_URL is insecure http (like localhost), use relative /api
-  if (typeof window !== 'undefined' && window.location.protocol === 'https:' && rawApiUrl && rawApiUrl.startsWith('http://')) {
-    console.warn('api.js: Ignored insecure http VITE_API_URL on HTTPS production; falling back to relative /api');
-    return '/api';
+  // Local development
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5000/api';
   }
-  if (rawApiUrl) {
+
+  // If explicit environment variable is provided and not localhost
+  if (rawApiUrl && !rawApiUrl.includes('localhost')) {
     return rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`;
   }
-  return import.meta.env.DEV ? 'http://localhost:5000/api' : '/api';
+
+  // When hosted on an external frontend domain (e.g. Cloudflare Workers: web.dhiiltech.workers.dev)
+  // or on custom domain without its own backend, use the live Vercel backend API
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host.includes('workers.dev') || host.includes('pages.dev') || (!host.includes('vercel.app') && !host.includes('localhost'))) {
+      return 'https://dhiil-tech.vercel.app/api';
+    }
+  }
+
+  // Running directly on Vercel
+  return '/api';
 }
 
 export const API_BASE = getApiBase();
