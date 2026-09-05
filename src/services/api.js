@@ -5,9 +5,20 @@
  */
 
 const rawApiUrl = import.meta.env.VITE_API_URL;
-export const API_BASE = rawApiUrl
-  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`)
-  : (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
+
+function getApiBase() {
+  // If running on HTTPS (production) and VITE_API_URL is insecure http (like localhost), use relative /api
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:' && rawApiUrl && rawApiUrl.startsWith('http://')) {
+    console.warn('api.js: Ignored insecure http VITE_API_URL on HTTPS production; falling back to relative /api');
+    return '/api';
+  }
+  if (rawApiUrl) {
+    return rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`;
+  }
+  return import.meta.env.DEV ? 'http://localhost:5000/api' : '/api';
+}
+
+export const API_BASE = getApiBase();
 
 export async function getProjects() {
   try {
