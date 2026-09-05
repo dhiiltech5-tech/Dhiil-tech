@@ -39,12 +39,16 @@ app.use(cors({
 app.use(express.json({ limit: '16mb' }));
 app.use(express.urlencoded({ extended: true, limit: '16mb' }));
 
-// Ensure uploads folder exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+// Ensure uploads folder exists (safely for serverless environments)
+try {
+  const uploadsDir = path.join(__dirname, 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsDir));
+} catch (e) {
+  console.warn('Uploads directory initialization skipped:', e.message);
 }
-app.use('/uploads', express.static(uploadsDir));
 
 // Mount API routes with and without /api prefix for complete reverse-proxy resilience
 const apiEndpoints = [
@@ -95,6 +99,14 @@ async function startServer() {
   return server;
 }
 
-startServer();
+// Only listen directly when running standalone (e.g. node server.js or npm start), not when imported by Vercel Serverless (api/index.js)
+const isDirectRun = process.argv[1] && (
+  fileURLToPath(import.meta.url) === path.resolve(process.argv[1]) ||
+  process.argv[1].endsWith('server.js')
+);
+
+if (isDirectRun && !process.env.VERCEL) {
+  startServer();
+}
 
 export default app;
