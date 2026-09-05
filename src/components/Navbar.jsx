@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
   Menu,
   X,
@@ -8,12 +8,10 @@ import {
   Compass,
   Briefcase,
   Layers,
-  Shield,
   ArrowRight,
   Home,
   Newspaper,
-  Phone,
-  LayoutDashboard
+  Phone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,33 +19,6 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-  const [adminUser, setAdminUser] = useState(null);
-
-  useEffect(() => {
-    // Check if an admin session is active
-    const checkAdminSession = () => {
-      const stored = localStorage.getItem('ots-admin-session');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (parsed && parsed.token) {
-            setIsAdminLoggedIn(true);
-            setAdminUser(parsed);
-            return;
-          }
-        } catch {
-          // Ignore json parse error
-        }
-      }
-      setIsAdminLoggedIn(false);
-      setAdminUser(null);
-    };
-
-    checkAdminSession();
-    window.addEventListener('storage', checkAdminSession);
-    return () => window.removeEventListener('storage', checkAdminSession);
-  }, []);
 
   // Sync the HTML class whenever isDark changes
   useEffect(() => {
@@ -107,29 +78,8 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Active Admin Mode Floating Header Bar */}
-      {isAdminLoggedIn && (
-        <div className="bg-slate-950 border-b border-[#04C244]/30 py-2 px-6 fixed top-0 left-0 right-0 z-60 text-white text-xs font-bold flex items-center justify-between shadow-lg">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#04C244] animate-pulse"></span>
-            <span className="text-[#04C244] font-extrabold">ADMIN MODE ACTIVE:</span>
-            <span className="text-slate-300 hidden sm:inline">Viewing public site as <strong className="text-white">{adminUser?.name || 'Super Admin'}</strong></span>
-          </div>
-          <Link 
-            to="/admin/dashboard" 
-            className="flex items-center gap-1.5 px-3 py-1 bg-[#04C244] hover:bg-[#03a837] text-black font-extrabold rounded-full text-[11px] transition-all shadow-md shadow-[#04C244]/20"
-          >
-            <LayoutDashboard size={13} />
-            <span>Return to Admin Dashboard</span>
-            <ArrowRight size={12} />
-          </Link>
-        </div>
-      )}
-
       <nav
-        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
-          isAdminLoggedIn ? 'top-8' : 'top-0'
-        } ${
+        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
           isScrolled ? 'bg-[#02140B]/95 text-white backdrop-blur-2xl border-b border-[#00E676]/25 py-3.5 shadow-xl shadow-black/30' : 'bg-[#02140B]/85 text-white backdrop-blur-lg border-b border-white/10 py-5'
         }`}
       >
@@ -161,17 +111,6 @@ const Navbar = () => {
               ))}
             </ul>
 
-            {/* Admin Badge in Navbar if logged in */}
-            {isAdminLoggedIn && (
-              <Link
-                to="/admin/dashboard"
-                className="px-3.5 py-1.5 bg-[#04C244]/15 border border-[#04C244]/30 hover:bg-[#04C244]/25 text-[#04C244] rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-xs"
-              >
-                <Shield size={14} />
-                <span>Admin Panel</span>
-              </Link>
-            )}
-
             {/* Theme Toggle */}
             <motion.button
               onClick={toggleTheme}
@@ -196,15 +135,6 @@ const Navbar = () => {
 
           {/* Mobile Menu Toggle Button */}
           <div className="md:hidden flex items-center gap-3">
-            {isAdminLoggedIn && (
-              <Link
-                to="/admin/dashboard"
-                className="px-2.5 py-1 bg-[#04C244] text-black text-[10px] font-extrabold rounded-full flex items-center gap-1"
-              >
-                <Shield size={12} />
-                <span>Admin</span>
-              </Link>
-            )}
             <motion.button
               onClick={toggleTheme}
               whileTap={{ scale: 0.85 }}
@@ -277,22 +207,6 @@ const Navbar = () => {
                       );
                     })}
                   </div>
-
-                  {isAdminLoggedIn && (
-                    <div className="mt-4 p-4 rounded-2xl bg-[#04C244]/10 border border-[#04C244]/30">
-                      <p className="text-xs font-extrabold text-[#04C244] mb-2 flex items-center gap-1.5">
-                        <Shield size={14} /> Admin Mode Active
-                      </p>
-                      <Link
-                        to="/admin/dashboard"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#04C244] text-black text-xs font-extrabold transition-all shadow-md shadow-[#04C244]/20"
-                      >
-                        <LayoutDashboard size={14} />
-                        Return to Admin Dashboard
-                      </Link>
-                    </div>
-                  )}
 
                   <div className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-zinc-900 dark:to-zinc-950 border border-slate-100 dark:border-zinc-800/60 shadow-sm">
                     <h4 className="text-sm font-bold text-black dark:text-white mb-1">
